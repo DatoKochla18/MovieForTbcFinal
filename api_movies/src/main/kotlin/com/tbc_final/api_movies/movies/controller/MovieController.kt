@@ -16,7 +16,8 @@ class MovieController(private val movieService: MovieService) {
     @GetMapping
     fun getMovies(): List<MovieDTO> = movieService.getAllMovies()
 
-    // Get a specific movie and its screenings
     @GetMapping("/{id}")
-    fun getMovie(@PathVariable id: Long): MovieDetailDTO = movieService.getMovieDetail(id)
+    fun getMovieDetails(@PathVariable id: Int): MovieDetailDTO {
+        return movieService.getMovieById(id)
+    }
 }

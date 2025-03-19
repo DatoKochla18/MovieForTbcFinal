@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SeatRepository : JpaRepository<Seat, Long> {
+interface SeatRepository : JpaRepository<Seat, Int> {
     fun findByScreening(screening: Screening): List<Seat>
     fun findByScreeningAndSeatNumberIn(screening: Screening, seatNumbers: List<String>): List<Seat>
 }

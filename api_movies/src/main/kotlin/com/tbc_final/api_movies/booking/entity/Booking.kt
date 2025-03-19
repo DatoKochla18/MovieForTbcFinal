@@ -12,7 +12,7 @@ data class Booking(
 
     @ManyToOne(fetch = FetchType.LAZY)
     val screening: Screening,
-    @Column(name = "[User]")
+    @Column(name = "user_uid")
     val user: String,
 
     val seatNumbers: String

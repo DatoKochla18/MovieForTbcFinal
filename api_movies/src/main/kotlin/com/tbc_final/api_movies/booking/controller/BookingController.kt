@@ -6,18 +6,26 @@ import com.tbc_final.api_movies.booking.util.BookingResponse
 import com.tbc_final.api_movies.booking.util.toResponse
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api")
 class BookingController(private val bookingService: BookingService) {
 
+    // Endpoint to book seats for a specific screening
     @PostMapping("/{id}/bookings")
     @ResponseStatus(HttpStatus.CREATED)
     fun bookSeats(
-        @PathVariable id: Long,
+        @PathVariable id: Int,
         @RequestBody bookingRequest: BookingRequest
     ): BookingResponse {
-        val booking = bookingService.bookSeats(id, bookingRequest.user, bookingRequest.seatNumbers)
-        return booking.toResponse()
+        try {
+            val booking = bookingService.bookSeats(id, bookingRequest.user, bookingRequest.seatNumbers)
+            return booking.toResponse()
+        } catch (ex: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, ex.message)
+        } catch (ex: IllegalStateException) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, ex.message)
+        }
     }
 }

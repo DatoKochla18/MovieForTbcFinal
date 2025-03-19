@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/screenings")
 class ScreeningController(private val movieService: MovieService) {
 
-    // Get seat availability for a specific screening
     @GetMapping("/{id}/seats")
-    fun getSeats(@PathVariable id: Long): List<SeatDTO> = movieService.getSeatsForScreening(id)
+    fun getSeats(@PathVariable id: Int): List<SeatDTO> = movieService.getSeatsForScreening(id)
 }

@@ -14,6 +14,7 @@ data class Seat(
     @ManyToOne(fetch = FetchType.LAZY)
     val screening: Screening,
 
+    @Column(name = "seat_number")
     val seatNumber: String,
 
     @Enumerated(EnumType.STRING)

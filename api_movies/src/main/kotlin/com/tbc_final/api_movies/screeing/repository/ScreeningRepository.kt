@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ScreeningRepository : JpaRepository<Screening, Long> {
+interface ScreeningRepository : JpaRepository<Screening, Int> {
     fun findByMovie(movie: Movie): List<Screening>
 }

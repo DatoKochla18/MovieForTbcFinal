@@ -16,11 +16,23 @@ class BookingService(
 ) {
 
     @Transactional
-    fun bookSeats(screeningId: Long, user: String, seatNumbers: List<String>): Booking {
+    fun bookSeats(screeningId: Int, user: String, seatNumbers: List<String>): Booking {
         val screening = screeningRepository.findById(screeningId)
             .orElseThrow { IllegalArgumentException("Screening not found") }
+
+        // Find all seats for the requested screening and seat numbers
         val seatsToBook = seatRepository.findByScreeningAndSeatNumberIn(screening, seatNumbers)
 
+        // Validate that all requested seats exist
+        if (seatsToBook.size != seatNumbers.size) {
+            // Find which seat numbers don't exist
+            val foundSeatNumbers = seatsToBook.map { it.seatNumber }
+            val missingSeatNumbers = seatNumbers.filter { it !in foundSeatNumbers }
+
+            throw IllegalArgumentException("The following seats do not exist: ${missingSeatNumbers.joinToString(", ")}")
+        }
+
+        // Validate that all seats are available
         seatsToBook.forEach { seat ->
             if (seat.status != SeatStatus.FREE) {
                 throw IllegalStateException("Seat ${seat.seatNumber} is not available")
