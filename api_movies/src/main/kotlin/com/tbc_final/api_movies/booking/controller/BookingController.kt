@@ -1,9 +1,7 @@
 package com.tbc_final.api_movies.booking.controller
 
 import com.tbc_final.api_movies.booking.service.BookingService
-import com.tbc_final.api_movies.booking.util.BookingRequest
-import com.tbc_final.api_movies.booking.util.BookingResponse
-import com.tbc_final.api_movies.booking.util.toResponse
+import com.tbc_final.api_movies.booking.util.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -27,5 +25,11 @@ class BookingController(private val bookingService: BookingService) {
         } catch (ex: IllegalStateException) {
             throw ResponseStatusException(HttpStatus.CONFLICT, ex.message)
         }
+    }
+
+    @GetMapping("/bookings")
+    fun getBookingsByUser(@RequestParam userId: String): List<BookMovieResponse> {
+        val bookings = bookingService.getBookingsByUser(userId)
+        return bookings.map { it.toBookMovieResponse() }
     }
 }

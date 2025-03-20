@@ -32,18 +32,4 @@ class MovieController(private val movieService: MovieService) {
     @GetMapping("/genres")
     fun getAllGenres(): List<GenreDTO> = movieService.getAllGenres()
 
-    // Get screenings for a specific movie
-    @GetMapping("/{id}/screenings")
-    fun getScreeningsForMovie(@PathVariable id: Int): List<ScreeningDTO> {
-        return movieService.getScreeningsForMovie(id)
-    }
-
-    // Get all screenings within a time range
-    @GetMapping("/screenings")
-    fun getScreenings(
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) startTime: LocalDateTime,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) endTime: LocalDateTime
-    ): List<ScreeningDTO> {
-        return movieService.getScreeningsInTimeRange(startTime, endTime)
-    }
 }

@@ -34,11 +34,14 @@ class BookingService(
 
         // Validate that all seats are available
         seatsToBook.forEach { seat ->
-            if (seat.status != SeatStatus.FREE) {
+            if ((seat.status == SeatStatus.FREE) || (seat.status == SeatStatus.HELD)) {
+                seat.status = SeatStatus.BOOKED
+                seatRepository.save(seat)
+
+            } else {
                 throw IllegalStateException("Seat ${seat.seatNumber} is not available")
+
             }
-            seat.status = SeatStatus.BOOKED
-            seatRepository.save(seat)
         }
 
         // Convert the list to a comma-separated string
@@ -46,5 +49,9 @@ class BookingService(
 
         val booking = Booking(screening = screening, user = user, seatNumbers = seatNumbersString)
         return bookingRepository.save(booking)
+    }
+
+    fun getBookingsByUser(user: String): List<Booking> {
+        return bookingRepository.findByUser(user)
     }
 }

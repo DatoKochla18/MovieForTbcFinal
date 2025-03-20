@@ -1,6 +1,7 @@
 package com.tbc_final.api_movies.movies.dto
 
 import com.tbc_final.api_movies.movies.entity.Movie
+import com.tbc_final.api_movies.screeing.dto.ScreeningDTO
 
 data class MovieDetailDTO(
     val id: Int,
@@ -8,10 +9,11 @@ data class MovieDetailDTO(
     val description: String,
     val duration: Int,
     val genres: List<GenreDTO>,
-    val actors: List<ActorDTO>
+    val actors: List<ActorDTO>,
+    val screenings: List<ScreeningDTO> // new field
 )
 
-fun Movie.toDetailDto() = MovieDetailDTO(
+fun Movie.toDetailDto(screenings: List<ScreeningDTO>) = MovieDetailDTO(
     id = this.id,
     title = this.title,
     description = this.description,
@@ -23,5 +25,6 @@ fun Movie.toDetailDto() = MovieDetailDTO(
             name = it.name,
             bio = it.bio
         )
-    }
+    },
+    screenings = screenings
 )

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface BookingRepository : JpaRepository<Booking, Int> {
     fun findByScreeningId(screeningId: Int): List<Booking>
+    fun findByUser(user: String): List<Booking>
 }

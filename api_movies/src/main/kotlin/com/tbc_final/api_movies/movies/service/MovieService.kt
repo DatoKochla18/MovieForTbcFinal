@@ -4,7 +4,6 @@ import com.tbc_final.api_movies.movies.dto.*
 import com.tbc_final.api_movies.movies.repository.GenreRepository
 import com.tbc_final.api_movies.movies.repository.MovieRepository
 import com.tbc_final.api_movies.screeing.dto.ScreeningDTO
-import com.tbc_final.api_movies.screeing.dto.toDTO
 import com.tbc_final.api_movies.screeing.repository.ScreeningRepository
 import com.tbc_final.api_movies.seat.dto.SeatDTO
 import com.tbc_final.api_movies.seat.dto.toDTO
@@ -70,24 +69,21 @@ class MovieService(
     }
 
     fun getMovieById(id: Int): MovieDetailDTO {
-        return movieRepository.findById(id).map { it.toDetailDto() }
-            .orElseThrow { ResourceNotFoundException("Movie not found with id: $id") }
+        // Retrieve the movie entity
+        val movie = movieRepository.findById(id)
+            .orElseThrow { RuntimeException("Movie not found") }
+
+        // Fetch all screenings for the movie
+        val screeningDTOs = screeningRepository.findByMovie(movie)
+            .map { ScreeningDTO(it.id, it.screeningTime) }
+
+        // Convert the movie entity to a DTO including screenings
+        return movie.toDetailDto(screeningDTOs)
     }
 
     fun getAllGenres(): List<GenreDTO> =
         genreRepository.findAll().map { GenreDTO(it.id, it.name) }
 
-    // Get all screenings for a specific movie
-    fun getScreeningsForMovie(movieId: Int): List<ScreeningDTO> {
-        val movie = movieRepository.findById(movieId)
-            .orElseThrow { ResourceNotFoundException("Movie not found with id: $movieId") }
-        return screeningRepository.findByMovie(movie).map { it.toDTO() }
-    }
-
-    // Get screenings within a time range
-    fun getScreeningsInTimeRange(startTime: LocalDateTime, endTime: LocalDateTime): List<ScreeningDTO> {
-        return screeningRepository.findByScreeningTimeBetween(startTime, endTime).map { it.toDTO() }
-    }
 
     fun getSeatsForScreening(screeningId: Int): List<SeatDTO> {
         val screening = screeningRepository.findById(screeningId)
