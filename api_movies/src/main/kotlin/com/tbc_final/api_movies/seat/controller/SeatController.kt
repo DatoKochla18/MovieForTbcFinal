@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api")
 class SeatController(private val seatService: SeatService) {
 
-    @PutMapping("/screenings/{screeningId}/seats/status")
+    @PutMapping("screening/{screeningId}")
     @ResponseStatus(HttpStatus.OK)
     fun updateSeatsStatus(
         @PathVariable screeningId: Int,

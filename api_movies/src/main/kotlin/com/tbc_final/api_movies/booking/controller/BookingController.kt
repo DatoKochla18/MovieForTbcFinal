@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException
 class BookingController(private val bookingService: BookingService) {
 
     // Endpoint to book seats for a specific screening
-    @PostMapping("/{id}/bookings")
+    @PostMapping("/{id}/book")
     @ResponseStatus(HttpStatus.CREATED)
     fun bookSeats(
         @PathVariable id: Int,

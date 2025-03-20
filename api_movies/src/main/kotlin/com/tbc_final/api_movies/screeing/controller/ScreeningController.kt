@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/screenings")
+@RequestMapping("/api")
 class ScreeningController(private val movieService: MovieService) {
 
     @GetMapping("/{id}/seats")
