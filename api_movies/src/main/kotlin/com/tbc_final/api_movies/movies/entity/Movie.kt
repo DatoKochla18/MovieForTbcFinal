@@ -18,5 +18,13 @@ data class Movie(
         joinColumns = [JoinColumn(name = "movie_id")],
         inverseJoinColumns = [JoinColumn(name = "actor_id")]
     )
-    val actors: Set<Actor> = emptySet()
+    val actors: Set<Actor> = emptySet(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "movie_genre",
+        joinColumns = [JoinColumn(name = "movie_id")],
+        inverseJoinColumns = [JoinColumn(name = "genre_id")]
+    )
+    val genres: Set<Genre> = emptySet()
 )

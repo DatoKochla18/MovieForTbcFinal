@@ -5,12 +5,15 @@ import java.time.LocalDateTime
 
 data class ScreeningDTO(
     val id: Int,
-    val screeningTime: LocalDateTime,
-    val movieTitle: String
+    val movieId: Int,
+    val movieTitle: String,
+    val screeningTime: LocalDateTime
 )
 
+// Extension function to convert Screening entity to DTO
 fun Screening.toDTO() = ScreeningDTO(
     id = this.id,
-    screeningTime = this.screeningTime,
-    movieTitle = this.movie.title
+    movieId = this.movie.id,
+    movieTitle = this.movie.title,
+    screeningTime = this.screeningTime
 )
