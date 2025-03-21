@@ -20,19 +20,14 @@ class BookingService(
         val screening = screeningRepository.findById(screeningId)
             .orElseThrow { IllegalArgumentException("Screening not found") }
 
-        // Find all seats for the requested screening and seat numbers
         val seatsToBook = seatRepository.findByScreeningAndSeatNumberIn(screening, seatNumbers)
-
-        // Validate that all requested seats exist
         if (seatsToBook.size != seatNumbers.size) {
-            // Find which seat numbers don't exist
             val foundSeatNumbers = seatsToBook.map { it.seatNumber }
             val missingSeatNumbers = seatNumbers.filter { it !in foundSeatNumbers }
 
             throw IllegalArgumentException("The following seats do not exist: ${missingSeatNumbers.joinToString(", ")}")
         }
 
-        // Validate that all seats are available
         seatsToBook.forEach { seat ->
             if ( (seat.status == SeatStatus.HELD)) {
                 seat.status = SeatStatus.BOOKED
@@ -44,7 +39,6 @@ class BookingService(
             }
         }
 
-        // Convert the list to a comma-separated string
         val seatNumbersString = seatNumbers.joinToString(",")
 
         val booking = Booking(screening = screening, user = user, seatNumbers = seatNumbersString)

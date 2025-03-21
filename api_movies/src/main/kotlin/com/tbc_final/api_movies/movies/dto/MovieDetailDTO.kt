@@ -28,7 +28,7 @@ fun Movie.toDetailDto(screenings: List<ScreeningDTO>) = MovieDetailDTO(
         ActorDTO(
             id = it.id,
             name = it.name,
-            bio = it.bio
+            actorImgUrl = it.actorImgUrl
         )
     },
     ageRestriction = this.ageRestriction,
