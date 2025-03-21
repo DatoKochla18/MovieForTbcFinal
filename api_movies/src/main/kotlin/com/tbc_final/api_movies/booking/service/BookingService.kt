@@ -34,7 +34,7 @@ class BookingService(
 
         // Validate that all seats are available
         seatsToBook.forEach { seat ->
-            if ((seat.status == SeatStatus.FREE) || (seat.status == SeatStatus.HELD)) {
+            if ( (seat.status == SeatStatus.HELD)) {
                 seat.status = SeatStatus.BOOKED
                 seatRepository.save(seat)
 

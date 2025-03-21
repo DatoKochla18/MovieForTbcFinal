@@ -75,7 +75,7 @@ class MovieService(
 
         // Fetch all screenings for the movie
         val screeningDTOs = screeningRepository.findByMovie(movie)
-            .map { ScreeningDTO(it.id, it.screeningTime) }
+            .map { ScreeningDTO(id = it.id, screeningPrice = it.screeningPrice, screeningTime = it.screeningTime) }
 
         // Convert the movie entity to a DTO including screenings
         return movie.toDetailDto(screeningDTOs)
@@ -88,7 +88,7 @@ class MovieService(
     fun getSeatsForScreening(screeningId: Int): List<SeatDTO> {
         val screening = screeningRepository.findById(screeningId)
             .orElseThrow { ResourceNotFoundException("Screening not found with id: $screeningId") }
-        return seatRepository.findByScreening(screening).map { it.toDTO() }
+        return seatRepository.findByScreening(screening).map { it.toDTO() }.sortedBy { it.seatNumber.lowercase() }
     }
 }
 

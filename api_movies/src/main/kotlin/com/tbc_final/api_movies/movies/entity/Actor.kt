@@ -12,5 +12,7 @@ data class Actor(
     val name: String,
 
     @Column(columnDefinition = "NVARCHAR(MAX)")
-    val bio: String? = null
+    val bio: String? = null,
+    @Column(name = "actor_img_url")
+    val actorImgUrl: String
 )
