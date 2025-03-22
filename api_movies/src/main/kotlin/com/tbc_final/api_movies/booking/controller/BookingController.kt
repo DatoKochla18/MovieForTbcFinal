@@ -27,9 +27,9 @@ class BookingController(private val bookingService: BookingService) {
         }
     }
 
-    @GetMapping("/bookings")
-    fun getBookingsByUser(@RequestParam userId: String): List<BookMovieResponse> {
-        val bookings = bookingService.getBookingsByUser(userId)
-        return bookings.map { it.toBookMovieResponse() }
-    }
+//    @GetMapping("/bookings")
+//    fun getBookingsByUser(@RequestParam userId: String): List<BookMovieResponse> {
+//        val bookings = bookingService.getBookingsByUser(userId)
+//        return bookings.map { it.toBookMovieResponse() }
+//    }
 }
