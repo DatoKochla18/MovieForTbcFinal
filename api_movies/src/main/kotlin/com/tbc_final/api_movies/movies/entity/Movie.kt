@@ -17,6 +17,9 @@ data class Movie(
     val director: String,
     @Column(name = "age_restriction")
     val ageRestriction: String,
+    @Column(name = "youtube_url")
+    val youtubeUrl: String,
+
     @Column(name = "movie_img_url")
     val movieImgUrl: String,
     @ManyToMany

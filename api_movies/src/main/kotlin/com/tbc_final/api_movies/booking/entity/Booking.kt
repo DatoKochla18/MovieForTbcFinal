@@ -20,3 +20,4 @@ data class Booking(
     @Enumerated(EnumType.STRING)
     var seatType: SeatStatus = SeatStatus.HELD
 )
+

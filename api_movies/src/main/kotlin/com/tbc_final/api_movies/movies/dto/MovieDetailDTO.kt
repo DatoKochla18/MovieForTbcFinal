@@ -13,6 +13,7 @@ data class MovieDetailDTO(
     val movieImgUrl: String,
     val director: String,
     val imdbRating: BigDecimal,
+    val youtubeUrl: String,
     val genres: List<GenreDTO>,
     val actors: List<ActorDTO>,
     val screenings: List<ScreeningDTO> // new field
@@ -35,6 +36,7 @@ fun Movie.toDetailDto(screenings: List<ScreeningDTO>) = MovieDetailDTO(
     movieImgUrl = this.movieImgUrl,
     imdbRating = this.imdbRating,
     screenings = screenings,
-    director = this.director
+    director = this.director,
+    youtubeUrl = this.youtubeUrl
 
 )
