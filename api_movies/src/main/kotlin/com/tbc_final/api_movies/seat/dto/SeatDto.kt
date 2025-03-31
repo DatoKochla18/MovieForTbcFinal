@@ -4,6 +4,11 @@ import com.tbc_final.api_movies.seat.entity.Seat
 import com.tbc_final.api_movies.seat.util.SeatStatus
 import java.math.BigDecimal
 
+data class SeatMainDTO(
+    val seats: List<SeatDTO>
+)
+
+
 data class SeatDTO(
     val id: Int,
     val seatNumber: String,
