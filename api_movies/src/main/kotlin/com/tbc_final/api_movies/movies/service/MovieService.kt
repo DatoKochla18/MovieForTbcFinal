@@ -75,7 +75,14 @@ class MovieService(
 
         // Fetch all screenings for the movie
         val screeningDTOs = screeningRepository.findByMovie(movie)
-            .map { ScreeningDTO(id = it.id, screeningPrice = it.screeningPrice, screeningTime = it.screeningTime) }
+            .map {
+                ScreeningDTO(
+                    id = it.id,
+                    screeningPrice = it.screeningPrice,
+                    screeningTime = it.screeningTime,
+                    iconUrl = it.iconUrl
+                )
+            }
 
         // Convert the movie entity to a DTO including screenings
         return movie.toDetailDto(screeningDTOs)

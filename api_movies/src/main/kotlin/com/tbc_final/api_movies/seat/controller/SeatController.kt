@@ -39,8 +39,9 @@ class SeatController(
     @GetMapping("/tickets")
     fun getTicketsBySeatStatus(
         @RequestParam userId: String,
-        @RequestParam status: SeatStatus
+        @RequestParam status: SeatStatus,
+        @RequestParam(required = false, defaultValue = "asc") orderType: String
     ): TicketSummary {
-        return bookingService.getTicketsBySeatStatus(userId, status)
+        return bookingService.getTicketsBySeatStatus(userId, status, orderType)
     }
 }

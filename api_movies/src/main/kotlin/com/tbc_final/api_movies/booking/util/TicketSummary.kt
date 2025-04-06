@@ -24,10 +24,12 @@ data class TicketSummary(
 
 data class TicketDto(
     val bookingId: Int,
+    val screeningId: Int,
     val movieTitle: String,
     val movieImgUrl: String,
     val screeningTime: LocalDateTime,
     val seatNumbers: String,
     val seatType: SeatStatus,
-    val totalMoney: BigDecimal
+    val totalMoney: BigDecimal,
+    val inserted: LocalDateTime
 )

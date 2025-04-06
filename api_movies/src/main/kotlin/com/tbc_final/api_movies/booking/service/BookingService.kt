@@ -10,6 +10,7 @@ import com.tbc_final.api_movies.seat.util.SeatStatus
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Service
 class BookingService(
@@ -44,11 +45,12 @@ class BookingService(
 
         val seatNumbersString = seatNumbers.joinToString(",")
 
-        val booking = Booking(screening = screening, user = user, seatNumbers = seatNumbersString)
+        val booking =
+            Booking(screening = screening, user = user, seatNumbers = seatNumbersString, inserted = LocalDateTime.now())
         return bookingRepository.save(booking)
     }
 
-    fun getTicketsBySeatStatus(user: String, status: SeatStatus): TicketSummary {
+    fun getTicketsBySeatStatus(user: String, status: SeatStatus, orderType: String): TicketSummary {
         val bookings = bookingRepository.findByUser(user).filter { it.seatType == status }
 
         // Calculate total money
@@ -63,15 +65,20 @@ class BookingService(
             val movie = screening.movie
             TicketDto(
                 bookingId = booking.id,
+                screeningId = booking.screening.id,
                 movieTitle = movie.title,
                 movieImgUrl = movie.movieImgUrl,
                 screeningTime = screening.screeningTime,
                 seatNumbers = booking.seatNumbers,
                 seatType = booking.seatType,
-                totalMoney = totalMoney
+                totalMoney = totalMoney,
+                inserted = booking.inserted
             )
         }
+        return TicketSummary(if (orderType.lowercase() == "asc") ticketDTOs.sortedBy { it.inserted } else ticketDTOs.sortedByDescending { it.inserted })
+    }
+    fun deleteBookingById(bookingId: Int) {
+        bookingRepository.deleteById(bookingId)
 
-        return TicketSummary(ticketDTOs)
     }
 }

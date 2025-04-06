@@ -3,6 +3,7 @@ package com.tbc_final.api_movies.booking.entity
 import com.tbc_final.api_movies.screeing.entity.Screening
 import com.tbc_final.api_movies.seat.util.SeatStatus
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "booking")
@@ -18,6 +19,9 @@ data class Booking(
 
     val seatNumbers: String,
     @Enumerated(EnumType.STRING)
-    var seatType: SeatStatus = SeatStatus.HELD
+    var seatType: SeatStatus = SeatStatus.HELD,
+
+    @Column(name = "inserted")
+    val inserted: LocalDateTime,
 )
 

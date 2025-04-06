@@ -26,6 +26,14 @@ class BookingController(private val bookingService: BookingService) {
             throw ResponseStatusException(HttpStatus.CONFLICT, ex.message)
         }
     }
+    @DeleteMapping("/booking/{id}")
+    fun deleteBooking(@PathVariable id: Int) {
+        try {
+            bookingService.deleteBookingById(id)
+        } catch (ex: Exception) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")
+        }
+    }
 
 //    @GetMapping("/bookings")
 //    fun getBookingsByUser(@RequestParam userId: String): List<BookMovieResponse> {

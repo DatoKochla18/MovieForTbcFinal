@@ -8,6 +8,7 @@ import com.tbc_final.api_movies.seat.util.SeatStatus
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class SeatService(
@@ -67,7 +68,8 @@ class SeatService(
                             screening = screening,
                             user = userId!!,
                             seatNumbers = seat.seatNumber,
-                            seatType = SeatStatus.HELD
+                            seatType = SeatStatus.HELD,
+                            inserted = LocalDateTime.now()
                         )
                         bookingRepository.save(booking)
                         logger.info("Created new booking: {}", booking)

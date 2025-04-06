@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 data class ScreeningDTO(
     val id: Int,
     val screeningTime: LocalDateTime,
-    val screeningPrice: BigDecimal
+    val screeningPrice: BigDecimal,
+    val iconUrl:String
 )
 

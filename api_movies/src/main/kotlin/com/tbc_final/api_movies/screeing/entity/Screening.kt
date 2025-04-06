@@ -16,5 +16,9 @@ data class Screening(
     @ManyToOne(fetch = FetchType.LAZY)
     val movie: Movie,
 
-    val screeningTime: LocalDateTime
+    val screeningTime: LocalDateTime,
+
+    @Column(name = "icon_url")
+    val iconUrl: String
+
 )
