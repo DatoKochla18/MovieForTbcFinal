@@ -2,6 +2,7 @@ package com.tbc_final.api_movies.booking.controller
 
 import com.tbc_final.api_movies.booking.service.BookingService
 import com.tbc_final.api_movies.booking.util.*
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -27,11 +28,14 @@ class BookingController(private val bookingService: BookingService) {
         }
     }
     @DeleteMapping("/booking/{id}")
-    fun deleteBooking(@PathVariable id: Int) {
-        try {
-            bookingService.deleteBookingById(id)
+    fun deleteBooking(@PathVariable id: Int): Map<String, Boolean> {
+        return try {
+            val deleted = bookingService.deleteBookingById(id)
+            mapOf("deleted" to deleted)
+        } catch (ex: NoSuchElementException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, ex.message)
         } catch (ex: Exception) {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete booking: ${ex.message}")
         }
     }
 

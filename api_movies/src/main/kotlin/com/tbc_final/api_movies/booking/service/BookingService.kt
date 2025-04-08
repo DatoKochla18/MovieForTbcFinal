@@ -77,8 +77,11 @@ class BookingService(
         }
         return TicketSummary(if (orderType.lowercase() == "asc") ticketDTOs.sortedBy { it.inserted } else ticketDTOs.sortedByDescending { it.inserted })
     }
-    fun deleteBookingById(bookingId: Int) {
+    fun deleteBookingById(bookingId: Int): Boolean {
+        if (!bookingRepository.existsById(bookingId)) {
+            throw NoSuchElementException("Booking with ID $bookingId not found")
+        }
         bookingRepository.deleteById(bookingId)
-
+        return true
     }
 }
