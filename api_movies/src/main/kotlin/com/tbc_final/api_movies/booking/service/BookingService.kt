@@ -53,16 +53,18 @@ class BookingService(
     fun getTicketsBySeatStatus(user: String, status: SeatStatus, orderType: String): TicketSummary {
         val bookings = bookingRepository.findByUser(user).filter { it.seatType == status }
 
-        // Calculate total money
-        val totalMoney = bookings.fold(BigDecimal.ZERO) { acc, booking ->
-            val seatCount = booking.seatNumbers.split(",").filter { it.isNotBlank() }.size
-            acc + booking.screening.screeningPrice.multiply(BigDecimal(seatCount))
-        }
-
         // Map each Booking to a TicketDTO
         val ticketDTOs = bookings.map { booking ->
             val screening = booking.screening
             val movie = screening.movie
+            val seatList = booking.seatNumbers.split(",").filter { it.isNotBlank() }
+
+            // Calculate money for this specific booking
+            val seatCount = seatList.size
+            val vipSeatCount = seatList.count { it.startsWith("A") }
+            val bookingTotal = screening.screeningPrice.multiply(BigDecimal(seatCount))
+                .add(BigDecimal(vipSeatCount * 4)) // Add 4 extra for each VIP seat
+
             TicketDto(
                 bookingId = booking.id,
                 screeningId = booking.screening.id,
@@ -71,11 +73,16 @@ class BookingService(
                 screeningTime = screening.screeningTime,
                 seatNumbers = booking.seatNumbers,
                 seatType = booking.seatType,
-                totalMoney = totalMoney,
+                totalMoney = bookingTotal, // Now using the booking-specific total
                 inserted = booking.inserted
             )
         }
-        return TicketSummary(if (orderType.lowercase() == "asc") ticketDTOs.sortedBy { it.inserted } else ticketDTOs.sortedByDescending { it.inserted })
+
+        return TicketSummary(if (orderType.lowercase() == "asc")
+            ticketDTOs.sortedBy { it.inserted }
+        else
+            ticketDTOs.sortedByDescending { it.inserted }
+        )
     }
     fun deleteBookingById(bookingId: Int): Boolean {
         if (!bookingRepository.existsById(bookingId)) {
@@ -83,5 +90,29 @@ class BookingService(
         }
         bookingRepository.deleteById(bookingId)
         return true
+    }
+    @Transactional
+    fun deleteMultipleBookings(bookingIds: List<Int>): Map<Int, Boolean> {
+        val result = mutableMapOf<Int, Boolean>()
+
+        // Check for non-existent bookings
+        val existingIds = bookingRepository.findAllById(bookingIds).map { it.id }
+        val nonExistingIds = bookingIds.filter { it !in existingIds }
+
+        if (nonExistingIds.isNotEmpty()) {
+            throw NoSuchElementException("The following bookings were not found: ${nonExistingIds.joinToString(", ")}")
+        }
+
+        // Delete all bookings
+        bookingIds.forEach { id ->
+            try {
+                bookingRepository.deleteById(id)
+                result[id] = true
+            } catch (e: Exception) {
+                result[id] = false
+            }
+        }
+
+        return result
     }
 }

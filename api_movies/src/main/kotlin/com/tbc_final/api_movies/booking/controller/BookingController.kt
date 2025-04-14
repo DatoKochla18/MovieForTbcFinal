@@ -1,8 +1,9 @@
 package com.tbc_final.api_movies.booking.controller
 
 import com.tbc_final.api_movies.booking.service.BookingService
-import com.tbc_final.api_movies.booking.util.*
-import org.springframework.dao.EmptyResultDataAccessException
+import com.tbc_final.api_movies.booking.util.BookingRequest
+import com.tbc_final.api_movies.booking.util.BookingResponse
+import com.tbc_final.api_movies.booking.util.toResponse
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -27,6 +28,7 @@ class BookingController(private val bookingService: BookingService) {
             throw ResponseStatusException(HttpStatus.CONFLICT, ex.message)
         }
     }
+
     @DeleteMapping("/booking/{id}")
     fun deleteBooking(@PathVariable id: Int): Map<String, Boolean> {
         return try {
@@ -38,6 +40,19 @@ class BookingController(private val bookingService: BookingService) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete booking: ${ex.message}")
         }
     }
+
+    @DeleteMapping("/bookings")
+    fun deleteMultipleBookings(@RequestBody bookingIds: List<Int>): Map<String, Boolean> {
+        return try {
+            bookingService.deleteMultipleBookings(bookingIds)
+            mapOf("deleted" to true)
+        } catch (ex: NoSuchElementException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, ex.message)
+        } catch (ex: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete bookings: ${ex.message}")
+        }
+    }
+
 
 //    @GetMapping("/bookings")
 //    fun getBookingsByUser(@RequestParam userId: String): List<BookMovieResponse> {
