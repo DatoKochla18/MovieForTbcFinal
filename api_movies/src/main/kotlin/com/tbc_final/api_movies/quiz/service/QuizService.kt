@@ -28,7 +28,7 @@ class QuizService(
     // Get all questions for a specific quiz
     fun getQuestionsForCategory(categoryId: Int): List<QuizQuestion> {
         return questionRepository.findByCategoryId(categoryId).map { questionEntity ->
-            val options = optionRepository.findByQuestionId(questionEntity.id)
+            val options = optionRepository.findByIdQuestionId(questionEntity.id)
             questionEntity.toModel(options.map { it.toModel() })
         }
     }
@@ -104,9 +104,9 @@ class QuizService(
 
     private fun AnswerOptionEntity.toModel(): AnswerOption {
         return AnswerOption(
-            id = this.id,
-            letter = this.letter,
-            text = this.text
+            id     = this.id.letter,
+            letter = this.id.letter,
+            text   = this.text
         )
     }
 
