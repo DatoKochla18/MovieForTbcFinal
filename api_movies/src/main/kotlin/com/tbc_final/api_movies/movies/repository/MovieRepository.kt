@@ -22,4 +22,5 @@ interface MovieRepository : JpaRepository<Movie, Int> {
         @Param("searchTerm") searchTerm: String,
         @Param("genreId") genreId: Int
     ): List<Movie>
+    fun findByIsUpcoming(isUpcoming: Boolean): List<Movie>
 }

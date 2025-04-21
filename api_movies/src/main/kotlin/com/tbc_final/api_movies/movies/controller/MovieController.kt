@@ -32,4 +32,7 @@ class MovieController(private val movieService: MovieService) {
     @GetMapping("/genres")
     fun getAllGenres(): List<GenreDTO> = movieService.getAllGenres()
 
+    @GetMapping("/upcoming")
+    fun getUpcomingMovies(): List<MovieDTO> = movieService.getUpcomingMovies()
+
 }

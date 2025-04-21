@@ -97,6 +97,10 @@ class MovieService(
             .orElseThrow { ResourceNotFoundException("Screening not found with id: $screeningId") }
         return seatRepository.findByScreening(screening).map { it.toDTO() }.sortedBy { it.seatNumber.lowercase() }
     }
+    fun getUpcomingMovies(): List<MovieDTO> {
+        return movieRepository.findByIsUpcoming(true).map { it.toDTO() }
+    }
+
 }
 
 class ResourceNotFoundException(message: String) : RuntimeException(message)

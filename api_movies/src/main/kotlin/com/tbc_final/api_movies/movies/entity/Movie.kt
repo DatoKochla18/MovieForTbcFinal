@@ -36,5 +36,9 @@ data class Movie(
         joinColumns = [JoinColumn(name = "movie_id")],
         inverseJoinColumns = [JoinColumn(name = "genre_id")]
     )
-    val genres: Set<Genre> = emptySet()
+    val genres: Set<Genre> = emptySet(),
+
+
+    @Column(name = "is_upcoming", nullable = false)
+    val isUpcoming: Boolean = false,
 )
