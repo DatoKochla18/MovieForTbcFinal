@@ -4,7 +4,6 @@ import com.tbc_final.api_movies.movies.dto.GenreDTO
 import com.tbc_final.api_movies.movies.dto.MovieDTO
 import com.tbc_final.api_movies.movies.dto.MovieDetailDTO
 import com.tbc_final.api_movies.movies.service.MovieService
-import com.tbc_final.api_movies.screeing.dto.ScreeningDTO
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -34,5 +33,11 @@ class MovieController(private val movieService: MovieService) {
 
     @GetMapping("/upcoming")
     fun getUpcomingMovies(): List<MovieDTO> = movieService.getUpcomingMovies()
+
+    @GetMapping("/popular")
+    fun getPopularMovies(): List<MovieDTO> = movieService.searchMovies(null, null, null, null).filter {
+        val tempList = listOf(13, 12, 6, 5, 4, 14)
+        it.id in tempList
+    }
 
 }

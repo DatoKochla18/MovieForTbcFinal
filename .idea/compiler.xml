@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="api_movies.api_movies.main" target="17" />
-      <module name="api_movies.api_movies.test" target="17" />
+      <module name="api_movies.api_movies.main~1" target="17" />
+      <module name="api_movies.api_movies.test~1" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
