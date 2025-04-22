@@ -3,6 +3,7 @@ package com.tbc_final.api_movies.booking.entity
 import com.tbc_final.api_movies.screeing.entity.Screening
 import com.tbc_final.api_movies.seat.util.SeatStatus
 import jakarta.persistence.*
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Entity
@@ -23,5 +24,9 @@ data class Booking(
 
     @Column(name = "inserted")
     val inserted: LocalDateTime,
+
+
+    @Column(name = "discount", columnDefinition = "decimal(10,2)")
+    val discount: BigDecimal = BigDecimal.ZERO
 )
 

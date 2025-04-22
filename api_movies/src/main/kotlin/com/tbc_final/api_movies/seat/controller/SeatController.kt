@@ -25,7 +25,8 @@ class SeatController(
             screeningId,
             statusUpdateRequest.seatNumbers,
             statusUpdateRequest.status,
-            statusUpdateRequest.userId
+            statusUpdateRequest.userId,
+            discount = statusUpdateRequest.discount
         )
         return mapOf(
             "screeningId" to screeningId,

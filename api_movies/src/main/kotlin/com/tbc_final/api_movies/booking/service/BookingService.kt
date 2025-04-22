@@ -62,8 +62,13 @@ class BookingService(
             // Calculate money for this specific booking
             val seatCount = seatList.size
             val vipSeatCount = seatList.count { it.startsWith("A") }
-            val bookingTotal = screening.screeningPrice.multiply(BigDecimal(seatCount))
+
+            // Calculate total before discount
+            val subtotal = screening.screeningPrice.multiply(BigDecimal(seatCount))
                 .add(BigDecimal(vipSeatCount * 4)) // Add 4 extra for each VIP seat
+
+            // Apply discount (if any)
+            val bookingTotal = subtotal.subtract(booking.discount.divide(BigDecimal.valueOf(100)))
 
             TicketDto(
                 bookingId = booking.id,
@@ -73,8 +78,8 @@ class BookingService(
                 screeningTime = screening.screeningTime,
                 seatNumbers = booking.seatNumbers,
                 seatType = booking.seatType,
-                totalMoney = bookingTotal, // Now using the booking-specific total
-                inserted = booking.inserted
+                totalMoney = bookingTotal,
+                inserted = booking.inserted,
             )
         }
 
@@ -84,6 +89,7 @@ class BookingService(
             ticketDTOs.sortedByDescending { it.inserted }
         )
     }
+
     fun deleteBookingById(bookingId: Int): Boolean {
         if (!bookingRepository.existsById(bookingId)) {
             throw NoSuchElementException("Booking with ID $bookingId not found")
@@ -91,6 +97,7 @@ class BookingService(
         bookingRepository.deleteById(bookingId)
         return true
     }
+
     @Transactional
     fun deleteMultipleBookings(bookingIds: List<Int>): Map<Int, Boolean> {
         val result = mutableMapOf<Int, Boolean>()

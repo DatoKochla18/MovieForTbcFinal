@@ -8,6 +8,7 @@ import com.tbc_final.api_movies.seat.util.SeatStatus
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -24,11 +25,12 @@ class SeatService(
         screeningId: Int,
         seatNumbers: List<String>,
         newStatus: SeatStatus,
-        userId: String? = null // userId required for FREE -> HELD transition and for HELD->BOOKED
+        userId: String? = null, // userId required for FREE -> HELD transition and for HELD->BOOKED
+        discount: BigDecimal = BigDecimal.ZERO  // Added discount parameter with default value of 0
     ): Int {
         logger.info(
-            "Updating seats status for screeningId: {}, seatNumbers: {}, newStatus: {}, userId: {}",
-            screeningId, seatNumbers, newStatus, userId
+            "Updating seats status for screeningId: {}, seatNumbers: {}, newStatus: {}, userId: {}, discount: {}",
+            screeningId, seatNumbers, newStatus, userId, discount
         )
 
         // Find the screening
@@ -69,7 +71,8 @@ class SeatService(
                             user = userId!!,
                             seatNumbers = seat.seatNumber,
                             seatType = SeatStatus.HELD,
-                            inserted = LocalDateTime.now()
+                            inserted = LocalDateTime.now(),
+                            discount = discount // Added discount
                         )
                         bookingRepository.save(booking)
                         logger.info("Created new booking: {}", booking)
@@ -79,7 +82,10 @@ class SeatService(
                         val currentSeats = existingBooking.seatNumbers.split(",").map { it.trim() }
                         if (seat.seatNumber !in currentSeats) {
                             val updatedSeats = currentSeats.plus(seat.seatNumber).joinToString(",")
-                            val updatedBooking = existingBooking.copy(seatNumbers = updatedSeats)
+                            val updatedBooking = existingBooking.copy(
+                                seatNumbers = updatedSeats,
+                                discount = discount // Update discount
+                            )
                             bookingRepository.save(updatedBooking)
                             logger.info(
                                 "Updated booking with new seat {}. Updated booking: {}",
@@ -105,7 +111,8 @@ class SeatService(
                     val updatedSeatNumbers = (currentSeats + seat.seatNumber).toSet().toList().sorted()
                     val updatedBooking = booking.copy(
                         seatNumbers = updatedSeatNumbers.joinToString(","),
-                        seatType = SeatStatus.BOOKED  // Ensure the booking is now marked as BOOKED
+                        seatType = SeatStatus.BOOKED,  // Ensure the booking is now marked as BOOKED
+                        discount = discount // Update discount
                     )
                     bookingRepository.save(updatedBooking)
                     logger.info("Updated booking to BOOKED: {}", updatedBooking)
@@ -139,13 +146,15 @@ class SeatService(
                     bookingRepository.delete(it)
                     logger.info("Deleted booking as no seats remain (freed seats: {})", seatNumbers)
                 } else {
-                    val updatedBooking = it.copy(seatNumbers = updatedSeats.joinToString(","))
+                    val updatedBooking = it.copy(
+                        seatNumbers = updatedSeats.joinToString(","),
+                        discount = discount // Update discount
+                    )
                     bookingRepository.save(updatedBooking)
                     logger.info("Updated booking after removing seats {}: {}", seatNumbers, updatedBooking)
                 }
             }
         }
-
 
         logger.info("Updated {} seats for screeningId: {}", seatsToUpdate.size, screeningId)
         return seatsToUpdate.size
