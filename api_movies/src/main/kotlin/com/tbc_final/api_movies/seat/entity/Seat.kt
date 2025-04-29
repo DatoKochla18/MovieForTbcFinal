@@ -18,6 +18,10 @@ data class Seat(
     @Column(name = "seat_number")
     val seatNumber: String,
 
+
+    @Column(name = "img_url")
+    val imgUrl: String,
+
     @Column(name = "vip_add_on")
     val vipAddOn: BigDecimal,
     @Enumerated(EnumType.STRING)

@@ -159,4 +159,46 @@ class SeatService(
         logger.info("Updated {} seats for screeningId: {}", seatsToUpdate.size, screeningId)
         return seatsToUpdate.size
     }
+
+    fun getSeatsByScreeningIdAndSeatNumbers(
+        screeningId: Int,
+        seatNumbers: List<String>?
+    ): List<Map<String, Any>> {
+        logger.info(
+            "Fetching seats for screeningId: {}, seatNumbers: {}",
+            screeningId, seatNumbers
+        )
+
+        // Find the screening
+        val screening = screeningRepository.findById(screeningId).orElseThrow {
+            IllegalArgumentException("Screening not found for id: $screeningId")
+        }
+
+        // Find all seats for the screening, optionally filtered by seat numbers
+        val seats = if (seatNumbers.isNullOrEmpty()) {
+            // If no seat numbers specified, return all seats for the screening
+            seatRepository.findByScreening(screening)
+        } else {
+            // If seat numbers specified, return only those seats
+            seatRepository.findByScreeningAndSeatNumberIn(screening, seatNumbers)
+        }
+
+        // Check if any requested seats weren't found
+        if (!seatNumbers.isNullOrEmpty() && seats.size != seatNumbers.size) {
+            val foundSeatNumbers = seats.map { it.seatNumber }
+            val missingSeatNumbers = seatNumbers.filter { it !in foundSeatNumbers }
+            logger.warn("Some requested seats not found. Missing seats: {}", missingSeatNumbers)
+        }
+
+        // Transform to DTO format and return just the list of seats
+        return seats.map { seat ->
+            mapOf(
+                "id" to seat.id,
+                "seatNumber" to seat.seatNumber,
+                "status" to seat.status,
+                "imgUrl" to seat.imgUrl,
+                "vipAddOn" to seat.vipAddOn
+            )
+        }
+    }
 }

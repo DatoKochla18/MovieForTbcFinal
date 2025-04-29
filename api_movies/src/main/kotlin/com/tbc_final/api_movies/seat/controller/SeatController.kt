@@ -45,4 +45,14 @@ class SeatController(
     ): TicketSummary {
         return bookingService.getTicketsBySeatStatus(userId, status, orderType)
     }
+
+    @GetMapping("/seats/{screeningId}")
+    fun getSeatsByScreeningIdAndSeatNumbers(
+        @PathVariable screeningId: Int,
+        @RequestParam(required = false) seats: String?
+    ): List<Map<String, Any>> {
+        val seatNumbers = seats?.split(",")?.map { it.trim() }
+
+        return seatService.getSeatsByScreeningIdAndSeatNumbers(screeningId, seatNumbers)
+    }
 }

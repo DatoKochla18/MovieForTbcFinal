@@ -13,12 +13,15 @@ data class SeatDTO(
     val id: Int,
     val seatNumber: String,
     val status: SeatStatus,
-    val vipAddOn: BigDecimal
+    val vipAddOn: BigDecimal,
+    val imgUrl: String
 )
 
 fun Seat.toDTO() = SeatDTO(
     id = this.id,
     seatNumber = this.seatNumber,
     status = this.status,
-    vipAddOn = this.vipAddOn
+    vipAddOn = this.vipAddOn,
+    imgUrl = this.imgUrl
+
 )
